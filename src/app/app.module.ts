@@ -10,6 +10,7 @@ import localeArExtra from '@angular/common/locales/extra/ar';
 import { registerLocaleData } from '@angular/common';
 import { Resources } from './resources';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { LocaleHelper } from './locale.helper';
 
 @NgModule({
   declarations: [
@@ -21,18 +22,19 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   providers: [{
-    provide: LOCALE_ID, useFactory: () => AppModule.getLocaleId()
+    provide: LOCALE_ID, useFactory: () => LocaleHelper.getCurrentLocale()
   }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
   constructor() {
     // Pre-load all the needed locales.
     registerLocaleData(localeEs, 'es', localeEsExtra);
     registerLocaleData(localeAr, 'ar', localeArExtra);
 
     // There are other ways to loads a module dynamically.
-    import( `../assets/resources.${AppModule.getLocaleId().toLowerCase()}.js`).then((r) => {
+    import(`../assets/resources.${LocaleHelper.getCurrentLocale().toLowerCase()}.js`).then((r) => {
 
       // Load `Resources` with values.
       for (const key in r.resources) {
@@ -44,10 +46,5 @@ export class AppModule {
       // Is the current language right to left?
       document.documentElement.dir = Resources.RightToLeft;
     });
-  }
-
-  public static getLocaleId(): string {
-    // Retrieve localeId from `localStorage` if any; otherwise, default to 'en-US'.
-    return <string>localStorage.getItem('__localeId') || 'en-US';
   }
 }

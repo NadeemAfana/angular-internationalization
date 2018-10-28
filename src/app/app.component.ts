@@ -3,6 +3,7 @@ import { Resources } from './resources';
 import { LocalizedComponent } from './localized.component';
 import { inherits } from 'util';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { LocaleHelper } from './locale.helper';
 
 @Component({
   selector: 'app-root',
@@ -20,9 +21,8 @@ export class AppComponent extends LocalizedComponent {
                                   { name: 'العربية', localeId: 'ar' }];
   profileForm: FormGroup;
 
-  constructor(@Inject(LOCALE_ID) locale: string) {
-    super(locale);
-
+  constructor() {
+    super();
     this.profileForm  = new FormGroup({
       'firstName': new FormControl('', [
         Validators.required,
@@ -48,8 +48,7 @@ export class AppComponent extends LocalizedComponent {
   }
 
   public languageSelected($event, language: Language): void {
-    // Set the new language.
-    localStorage.setItem('__localeId', language.localeId);
+    LocaleHelper.setCurrentLocale(language.localeId);
 
     // Reload page.
     window.location.reload();
