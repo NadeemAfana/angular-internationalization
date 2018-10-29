@@ -1,27 +1,46 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, LOCALE_ID } from '@angular/core';
-
+import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import localeEs from '@angular/common/locales/es';
 import localeEsExtra from '@angular/common/locales/extra/es';
 
 import localeAr from '@angular/common/locales/ar';
 import localeArExtra from '@angular/common/locales/extra/ar';
-import { registerLocaleData } from '@angular/common';
+import { registerLocaleData, APP_BASE_HREF } from '@angular/common';
 import { Resources } from './resources';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LocaleHelper } from './locale.helper';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ProfileComponent } from './profile/profile.component';
+
+const appRoutes: Routes = [
+  { path: 'profile', component: ProfileComponent },
+  { path: '',  redirectTo: 'profile', pathMatch: 'full' },
+  { path: '**', component: PageNotFoundComponent },
+
+];
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PageNotFoundComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule.forRoot(
+      appRoutes
+    )
   ],
-  providers: [{
+  providers: [ {
+    provide: APP_BASE_HREF, useFactory: () => {
+      // Suppress the default locale from the url
+      return LocaleHelper.isDefaultLocaleSet() ? '/' :  `/${LocaleHelper.getCurrentLocale()}/`;
+    }
+  }, {
     provide: LOCALE_ID, useFactory: () => LocaleHelper.getCurrentLocale()
   }],
   bootstrap: [AppComponent]

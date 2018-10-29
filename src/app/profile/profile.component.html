@@ -1,0 +1,60 @@
+<div class="col-md-4 col-md-offset-4">
+  <h4>{{ resources.DateIs }} {{ now | date:'fullDate' }}</h4>
+  <hr/>
+  <h4>Choose your language</h4>
+  <form>
+    <div class="form-group">
+      <div *ngFor="let language of languages">
+        <label for="language_{{language.localeId}}">
+          <input id="language_{{language.localeId}}" [value]='language.localeId' type="radio" name="language" [checked]="( localeId == language.localeId )"
+            (change)="languageSelected($event, language)"> {{language.name}}
+        </label>
+      </div>
+    </div>
+  </form>
+
+  <form>
+    <div class="form-group" [formGroup]="profileForm">
+      <label for="firstName">{{ resources.FirstName}}</label>
+      <input type="text" class="form-control" id="firstName" name="firstName" required formControlName="firstName" />
+
+      <div *ngIf="profileForm.controls.firstName.invalid && (profileForm.controls.firstName.dirty || profileForm.controls.firstName.touched)"
+        class="alert alert-danger">
+        <div *ngIf="profileForm.controls.firstName.errors.required">
+          {{ resources.FirstNameRequired }}
+        </div>
+        <div *ngIf="profileForm.controls.firstName.errors.maxlength">
+          {{ resources.FirstNameLong }}
+        </div>
+      </div>
+
+      <label for="lastName">{{ resources.LastName}}</label>
+      <input type="text" class="form-control" id="lastName" required formControlName="lastName" />
+      <div *ngIf="profileForm.controls.lastName.invalid && (profileForm.controls.lastName.dirty || profileForm.controls.lastName.touched)"
+        class="alert alert-danger">
+        <div *ngIf="profileForm.controls.lastName.errors.required">
+          {{ resources.LastNameRequired }}
+        </div>
+        <div *ngIf="profileForm.controls.lastName.errors.maxlength">
+          {{ resources.LastNameLong }}
+        </div>
+      </div>
+
+
+      <label for="age">{{ resources.Age}}</label>
+      <input type="text" class="form-control" id="age" required formControlName="age" [formControl]="profileForm.controls.age" />
+      <div *ngIf="profileForm.controls.age.invalid && (profileForm.controls.age.dirty || profileForm.controls.age.touched)"
+        class="alert alert-danger">
+        <div *ngIf="profileForm.controls.age.errors.required">
+          {{ resources.AgeRequired }}
+        </div>
+        <div *ngIf="profileForm.controls.age.errors.max || profileForm.controls.age.errors.min">
+          {{ resources.AgeRange }}
+        </div>
+      </div>      
+    </div>
+
+    <button type="submit" (click)="createClicked($event)" class="btn btn-success">{{ resources.Create }}</button>
+
+  </form>
+</div>
